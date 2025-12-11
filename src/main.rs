@@ -15,16 +15,19 @@ struct Arg {
 
 #[derive(Subcommand, PartialEq, Eq)]
 enum Commands {
-    Init,
-    Add,
+    Init {},
+    Add {
+        #[arg(required = true)]
+        paths: Vec<String>,
+    },
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Arg::parse();
     match args.command {
-        Some(Commands::Init) => init()?,
-        Some(Commands::Add) => {
-            add();
+        Some(Commands::Init {}) => init()?,
+        Some(Commands::Add { paths }) => {
+            add(paths);
         }
         None => {
             println!("Indicate a command!!!!!!!!!!!!");

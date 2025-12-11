@@ -1,7 +1,3 @@
-mod init;
-
-use clap::{Parser, Subcommand};
-use init::init;
 use std::error::Error;
 use std::fs::{self};
 
@@ -9,7 +5,7 @@ use sha2::{Digest, Sha256};
 use std::io::Write;
 use zstd::stream::Encoder;
 
-pub fn write_blob(file_path: &str) -> Result<(), Box<dyn Error>> {
+pub fn write_blob(file_path: &str) -> Result<[u8; 32], Box<dyn Error>> {
     // blobファイルを作成
     let content = fs::read(file_path)?;
     let header = format!("blob {}\0", content.len());
@@ -37,5 +33,5 @@ pub fn write_blob(file_path: &str) -> Result<(), Box<dyn Error>> {
     encoder.write_all(&blob)?;
     encoder.finish()?;
 
-    Ok(())
+    Ok(hash.into())
 }
